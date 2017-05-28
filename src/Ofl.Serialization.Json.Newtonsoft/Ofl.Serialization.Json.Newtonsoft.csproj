@@ -6,7 +6,7 @@
     <PackageId>Ofl.Serialization.Json.Newtonsoft</PackageId>
     <PackageProjectUrl>https://github.com/OneFrameLink/Ofl.Serialization.Json.Newtonsoft</PackageProjectUrl>
     <RepositoryUrl>https://github.com/OneFrameLink/Ofl.Serialization.Json.Newtonsoft.git</RepositoryUrl>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <PackageTags>serialization newtonsoft-json json-net json</PackageTags>
   </PropertyGroup>
   <ItemGroup>

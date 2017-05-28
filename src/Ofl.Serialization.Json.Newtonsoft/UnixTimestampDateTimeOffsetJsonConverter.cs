@@ -14,6 +14,25 @@ namespace Ofl.Serialization.Json.Newtonsoft
     //////////////////////////////////////////////////
     public class UnixTimestampDateTimeOffsetJsonConverter : JsonConverter
     {
+        #region Constructors
+
+        public UnixTimestampDateTimeOffsetJsonConverter() : this(false)
+        { }
+
+        public UnixTimestampDateTimeOffsetJsonConverter(bool returnNullOnReadException)
+        {
+            // Assign values.
+            ReturnNullOnReadException = returnNullOnReadException;
+        }
+
+        #endregion
+
+        #region Instance, read-only state.
+
+        public bool ReturnNullOnReadException { get; }
+
+        #endregion
+
         #region Overrides of JsonConverter
 
         //////////////////////////////////////////////////
@@ -66,23 +85,35 @@ namespace Ofl.Serialization.Json.Newtonsoft
             if (objectType == null) throw new ArgumentNullException(nameof(objectType));
             if (serializer == null) throw new ArgumentNullException(nameof(serializer));
 
-            // Read as a string or boolean.
-            object value = reader.Value;
+            // Wrap in a try/catch.
+            try
+            {
+                // Read as a string or boolean.
+                object value = reader.Value;
 
-            // If the value is null, return null.
-            if (value == null) return null;
+                // If the value is null, return null.
+                if (value == null) return null;
 
-            // The value is convertable to a long.
-            var seconds = Convert.ToInt64(value, CultureInfo.InvariantCulture);
+                // The value is convertable to a long.
+                var seconds = Convert.ToInt64(value, CultureInfo.InvariantCulture);
 
-            // Return the date time offset.
-            DateTimeOffset returnValue = DateTimeOffset.FromUnixTimeSeconds(seconds);
+                // Return the date time offset.
+                DateTimeOffset returnValue = DateTimeOffset.FromUnixTimeSeconds(seconds);
 
-            // If the type is nullable, return nullable.
-            if (objectType == typeof (DateTimeOffset?)) return (DateTimeOffset?) returnValue;
+                // If the type is nullable, return nullable.
+                if (objectType == typeof(DateTimeOffset?)) return (DateTimeOffset?)returnValue;
 
-            // Return the return value.
-            return returnValue;
+                // Return the return value.
+                return returnValue;
+            }
+            catch
+            {
+                // If not swallowing a read exception, throw.
+                if (!ReturnNullOnReadException) throw;
+
+                // Return null.
+                return null;
+            }
         }
 
         public override bool CanRead => true;

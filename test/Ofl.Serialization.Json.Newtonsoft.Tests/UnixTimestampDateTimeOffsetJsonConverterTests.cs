@@ -32,5 +32,32 @@ namespace Ofl.Serialization.Json.Newtonsoft.Tests
             // Equal.
             Assert.Equal(expected, testClass.Value);
         }
+
+        private class TestClassSwallowReadException
+        {
+            [JsonConverter(typeof(UnixTimestampDateTimeOffsetJsonConverter), true)]
+            public DateTimeOffset? Value { get; set; }
+        }
+
+        [Theory]
+        [InlineData("{\"value\":-62169955200 }", null)]
+        public void Test_ReadJson_SwallowReadException(string json, string dateTimeOffsetString)
+        {
+            // Validate parameters.
+            if (json == null) throw new ArgumentNullException(nameof(json));
+
+            // Get the date time offset.
+            DateTimeOffset? expected = string.IsNullOrWhiteSpace(dateTimeOffsetString) ?
+                (DateTimeOffset?) null : DateTimeOffset.Parse(dateTimeOffsetString);
+
+            // Parse/etc.
+            JObject obj = JObject.Parse(json);
+
+            // Map to an object.
+            TestClassSwallowReadException testClass = obj.ToObject<TestClassSwallowReadException>();
+
+            // Equal.
+            Assert.Equal(expected, testClass.Value);
+        }
     }
 }
