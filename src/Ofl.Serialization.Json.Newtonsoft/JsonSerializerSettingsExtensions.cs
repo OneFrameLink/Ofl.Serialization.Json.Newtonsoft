@@ -22,5 +22,8 @@ namespace Ofl.Serialization.Json.Newtonsoft
 
         public static string SerializeToString<TRequest>(this JsonSerializerSettings jsonSerializerSettings, TRequest request) =>
             jsonSerializerSettings.ToSerializer().SerializeToString(request);
+
+        public static TResponse DeserializeFromString<TResponse>(this JsonSerializerSettings jsonSerializerSettings, string json) =>
+            jsonSerializerSettings.ToSerializer().DeserializeFromString<TResponse>(json);
     }
 }

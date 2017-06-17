@@ -31,6 +31,20 @@ namespace Ofl.Serialization.Json.Newtonsoft
             }
         }
 
+        public static TResponse DeserializeFromString<TResponse>(this JsonSerializer serializer, string json)
+        {
+            // Validate parameters.
+            if (serializer == null) throw new ArgumentNullException(nameof(json));
+            if (string.IsNullOrWhiteSpace(json)) throw new ArgumentNullException(nameof(json));
+
+            // Create a reader.
+            using (var stringReader = new StringReader(json))
+            // Json reader.
+            using (var jsonReader = new JsonTextReader(stringReader))
+                // Deserialize.
+                return serializer.Deserialize<TResponse>(jsonReader);
+        }
+
         public static async Task<MemoryStream> SerializeToMemoryStreamAsync<TRequest>(this JsonSerializer serializer, TRequest request,
             CancellationToken cancellationToken)
         {
